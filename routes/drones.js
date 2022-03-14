@@ -46,14 +46,28 @@ router.post("/drones/create", async (req, res, next) => {
   }
 });
 
-router.get("/drones/:id/edit", (req, res, next) => {
-  // Iteration #4: Update the drone
-  // ... your code here
+router.get("/drones/:id/edit", async (req, res, next) => {
+  console.log("FROM GET", req.params)
+  const dronesId = mongoose.Types.ObjectId(req.params.id); /// ?
+  const droneDetails = await Drone.findById(dronesId);
+  console.log(droneDetails);
+
+  res.render('drones/update-form', { droneDetails });
 });
 
-router.post("/drones/:id/edit", (req, res, next) => {
-  // Iteration #4: Update the drone
-  // ... your code here
+router.post("/drones/:id/edit", async (req, res, next) => {
+  try {
+    console.log("FROM Post", req.params)
+    // HOW is it possible that req.params.id changed?! (spaces at beginning and eng)
+    const dronesId = mongoose.Types.ObjectId(req.params.id.trimStart().trimEnd());
+    await Drone.findByIdAndUpdate(dronesId, { ...req.body });
+    console.log("Drone successfully changed!")
+    res.redirect("/drones");
+  } 
+  catch (err) {
+    console.log(err);
+    res.redirect("/drones/" + dronesId + "/edit");
+  }  
 });
 
 router.post("/drones/:id/delete", (req, res, next) => {

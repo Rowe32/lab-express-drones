@@ -3,9 +3,12 @@
 {{!-- refering to drones.js - the name we pass it in res.render! --}}
 
 {{#each Drones}}
+
 <p>
     Name: {{ this.name }} <br>
     Proppeler: {{ this.propellers }} <br>
     Speed: {{ this.speed }} <br>
 </p>
+
+<button><a href="/drones/{{this._id}}/edit">Edit</a></button>
 {{/each}}
