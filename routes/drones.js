@@ -47,32 +47,38 @@ router.post("/drones/create", async (req, res, next) => {
 });
 
 router.get("/drones/:id/edit", async (req, res, next) => {
-  console.log("FROM GET", req.params)
+  console.log("FROM GET", req.params);
   const dronesId = mongoose.Types.ObjectId(req.params.id); /// ?
   const droneDetails = await Drone.findById(dronesId);
   console.log(droneDetails);
 
-  res.render('drones/update-form', { droneDetails });
+  res.render("drones/update-form", { droneDetails });
 });
 
 router.post("/drones/:id/edit", async (req, res, next) => {
   try {
-    console.log("FROM Post", req.params)
+    console.log("FROM Post", req.params);
     // HOW is it possible that req.params.id changed?! (spaces at beginning and eng)
-    const dronesId = mongoose.Types.ObjectId(req.params.id.trimStart().trimEnd());
+    const dronesId = mongoose.Types.ObjectId(
+      req.params.id.trimStart().trimEnd()
+    );
     await Drone.findByIdAndUpdate(dronesId, { ...req.body });
-    console.log("Drone successfully changed!")
+    console.log("Drone successfully changed!");
     res.redirect("/drones");
-  } 
-  catch (err) {
+  } catch (err) {
     console.log(err);
     res.redirect("/drones/" + dronesId + "/edit");
-  }  
+  }
 });
 
-router.post("/drones/:id/delete", (req, res, next) => {
-  // Iteration #5: Delete the drone
-  // ... your code here
+router.post("/drones/:id/delete", async (req, res, next) => {
+  const dronesId = mongoose.Types.ObjectId(req.params.id);
+
+  await Drone.findByIdAndDelete(dronesId, { ...req.body });
+
+  console.log("drone was deleted");
+
+  res.redirect("/drones");
 });
 
 module.exports = router;
