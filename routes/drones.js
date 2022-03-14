@@ -1,14 +1,23 @@
 const express = require('express');
 const router = express.Router();
+const mongoose = require("mongoose");
 
 // require the Drone model here
 const Drone = require('../models/Drone.model')
 
 router.get('/drones', async (req, res, next) => {
   // Iteration #2: List the drones
-  const dronesFromDB = await Drone.find();
-  console.log(dronesFromDB);
-  res.render("drones", { allTheDrones : dronesFromDB })
+  try {
+    const dronesFromDB = await Drone.find();
+    console.log(dronesFromDB);
+    res.render("drones/list.hbs", { Drones : dronesFromDB });
+  }
+  catch (err) {
+    console.log("there was an error rendering to the hbs", err);
+  }
+  finally {
+    next();
+  } 
 });
 
 router.get('/drones/create', (req, res, next) => {
